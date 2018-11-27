@@ -17,4 +17,4 @@ app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));
 // "start": "webpack-dev-server --mode development --open",
 // "dev": "webpack --mode development",
 // "server": "nodemon src/server"
-// "build": "webpack --mode production",
+//"build": "webpack --mode production",
