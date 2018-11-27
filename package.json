@@ -5,10 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "webpack --mode development",
     "build": "webpack --mode production",
     "heroku-prebuild": "npm install --dev",
-    "start": "webpack-dev-server --mode development --open",
     "server": "nodemon src/server"
   },
   "repository": {
