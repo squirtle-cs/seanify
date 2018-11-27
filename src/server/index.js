@@ -3,32 +3,25 @@
  * @description Entry Point for Server
  */
 
+// Import Express to activate server
 const express = require('express');
 
-const PORT = 3000;
-
 const app = express();
+const PORT = 3000;
 
 // Import Middleware to interface with Spotify API
 const spotifyController = require('./controllers/spotifyController');
 
-// GET Route - Get Spotify Authorization
+// GET Route - Get Spotify Authorization Code
 app.get('/spotify-login',
   spotifyController.getAuthCode,
   (req, res) => res.redirect(res.locals.redirectUrl));
 
-// GET Route - Get Spotify Authorization
+// GET Route - Get Spotify Token > Retreive and Parse Playlists > Return Parsed Playlists
 app.get('/callback/spotify',
   spotifyController.getAuthToken,
-  (req, res) => {
-    console.log(req.body);
-    res.sendStatus(200);
-  });
-
-// POST Route - Get Spotify Playlist
-app.post('/get-spotify-playlist',
-  spotifyController.getToken,
-  spotifyController.getPlaylists,
-  (req, res) => res.status(200).json(res.locals));
+  spotifyController.getUserPlaylists,
+  spotifyController.parseUserPlaylists,
+  (req, res) => res.status(200).json(res.locals.parsedPlaylists));
 
 app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));
