@@ -1,0 +1,27 @@
+{
+  "name": "seanify",
+  "version": "1.0.0",
+  "description": "Playlist Migration Application",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon src/server",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vartanovs/seanify.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vartanovs/seanify/issues"
+  },
+  "homepage": "https://github.com/vartanovs/seanify#readme",
+  "dependencies": {
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
+}
