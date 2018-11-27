@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "webpack --mode production",
+    "start": "webpack-dev-server --mode development --open",
     "heroku-postbuild": "npm install && npm install --only-dev && npm run build"
   },
   "repository": {
