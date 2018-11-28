@@ -1,5 +1,9 @@
 
 body {
   line-height: 2;
-  color: darkred;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+.imgLink:hover {
+  cursor:pointer
 }
