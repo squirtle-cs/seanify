@@ -36,6 +36,7 @@ app.get('/spotify/playlists',
 // GET Route - Get Spotify Songs for Playlist
 app.get('/spotify/playlist/:id',
   spotifyController.getSongs,
-  (req, res) => res.status(200).json(res.locals.songs));
+  spotifyController.parseSongs,
+  (req, res) => res.status(200).json(res.locals.parsedSongs));
 
 app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));

@@ -82,6 +82,7 @@ const getUserPlaylists = (req, res, next) => {
     .then((data) => {
       // Store Spotify Playlist Data in res.locals
       res.locals.playlists = data;
+      fs.writeFile(path.resolve(__dirname, '../../../samples/playlist.json'), JSON.stringify(data, null, 2), err => console.error(err));
       return next();
     })
     .catch(spotErr => console.error('Error: Could Not Retrieve User Playlist From Spotify: ', spotErr));
@@ -109,6 +110,7 @@ const parseUserPlaylists = (_, res, next) => {
       imageUri,
     });
   });
+  fs.writeFile(path.resolve(__dirname, '../../../samples/parsedPlaylist.json'), JSON.stringify(res.locals.parsedPlaylists, null, 2), err => console.error(err));
   return next();
 };
 
@@ -148,10 +150,39 @@ const getSongs = (req, res, next) => {
     .catch(spotErr => console.error('Error: Could Not Retrieve Song Data From Spotify: ', spotErr));
 };
 
+
+/**
+ * Middleware to Parse Spotify Songs Data, return array of parsed objects
+ * @param {Request} _ Express HTTP Request Object
+ * @param {Response} res Express HTTP Response Object
+ * @param {*} next Express Function to Call Next Middleware
+ */
+const parseSongs = (_, res, next) => {
+  // Store Parsed Playlist Objects in res.locals Array
+  res.locals.parsedSongs = [];
+  // Parse each item in the playlist object retrieved from Spotify
+  res.locals.songs.items.forEach((song) => {
+    const imageUri = song.track.album.images.length ? song.track.album.images[0].url : '';
+    return res.locals.parsedSongs.push({
+      songId: song.track.id,
+      songName: song.track.name,
+      songUri: song.track.external_urls.spotify,
+      artistName: song.track.artists[0].name,
+      artistUri: song.track.artists[0].external_urls.spotify,
+      albumName: song.track.album.name,
+      albumUri: song.track.album.external_urls.spotify,
+      imageUri,
+    });
+  });
+  fs.writeFile(path.resolve(__dirname, '../../../samples/parsedSongs.json'), JSON.stringify(res.locals.parsedSongs, null, 2), err => console.error(err));
+  return next();
+};
+
 module.exports = {
   getAuthCode,
   getAuthToken,
   getSongs,
   getUserPlaylists,
+  parseSongs,
   parseUserPlaylists,
 };
