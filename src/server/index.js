@@ -3,18 +3,46 @@
  * @description Entry Point for Server
  */
 
+// Import Express to activate server, Cookie Parser to retrieve cookie data
 const express = require('express');
 const PORT = process.env.PORT || 3000;
 const app = express();
 const db = require('./utils/dbconnect');
-
+const cookieParser = require('cookie-parser');
 
 // use statements
 app.use(bodyParser.json());
 
 // deploys all the files that is in your dist folder
 app.use(express.static('dist'));
+app.use(cookieParser());
 
+// Import Middleware to interface with Spotify API and Manage Cookies
+const spotifyController = require('./controllers/spotifyController');
+const cookieController = require('./controllers/cookieController');
+
+// GET Route - Get Spotify Authorization Code
+app.get('/spotify/login',
+  spotifyController.getAuthCode,
+  (req, res) => res.redirect(res.locals.redirectUrl));
+
+// GET Route - Get Spotify Token > Set to cookies { sToken: token }
+app.get('/callback/spotify',
+  spotifyController.getAuthToken,
+  cookieController.setCookie,
+  (req, res) => res.redirect('/spotify/playlists'));
+
+// GET Route - Get Spotify Playlists > Return Parsed Playlists
+app.get('/spotify/playlists',
+  spotifyController.getUserPlaylists,
+  spotifyController.parseUserPlaylists,
+  (req, res) => res.status(200).json(res.locals.parsedPlaylists));
+
+// GET Route - Get Spotify Songs for Playlist
+app.get('/spotify/playlist/:id',
+  spotifyController.getSongs,
+  spotifyController.parseSongs,
+  (req, res) => res.status(200).json(res.locals.parsedSongs));
 
 app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));
 
