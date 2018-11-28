@@ -1,47 +1,29 @@
 import React from 'react';
-import List from './List';
-import Form from './Form';
-import connectLink from '../../assets/connect_spotify.png';
+// import List from './List';
+// import Form from './Form';
+import Login from './Login';
+import PlaylistList from './PlaylistList';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loggedIn: false,
-      playlists: [],
+      // playlists: []
     };
-
-    this.fetchLogin = this.fetchLogin.bind(this);
-  }
-
-  fetchLogin() {
-    fetch('localhost:3000/spotify/login')
-      .then((data) => {
-        this.setState({ loggedIn: true, playlist: data });
-      });
   }
 
   render() {
     if (this.state.loggedIn) {
-      return (
-        <div></div>
-      );
+      return <PlaylistList />;
     }
-    return (
-      <div>
-        <h2>Migrate your Spotify Playlist to YouTube:</h2>
-        {/* <a href="localhost:3000/spotify/login"><img src={connectLink} alt="connect with Spotify"/></a> */}
-        {/* may need binding: */}
-        <img src={connectLink} onClick={this.fetchLogin} className="imgLink" alt="login to Spotify"></img>
-      </div>
-    );
+    return <Login loggedIn={this.state} />;
   }
 }
 
 export default App;
 
-
-// spotify/playlist/:id 
+// spotify/playlist/:id
 // use redux thunk;
 
 // each playlist obj will look like this:
