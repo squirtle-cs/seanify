@@ -126,7 +126,6 @@ const getSongs = (req, res, next) => {
   const spotURL = new URL(`https://api.spotify.com/v1/playlists/${req.params.id}/tracks`);
   // Query parameter - limit can be up to 100
   const queryParams = {
-    // fields: 'items(artists(name, external_urls), track.album.name, track.album.external_urls, track.album.images)',
     fields: 'items(track(id, name, external_urls, artists(name, external_urls), album(name, external_urls, images)))',
     limit: 100,
   };
