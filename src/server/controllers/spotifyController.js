@@ -81,7 +81,7 @@ const getUserPlaylists = (req, res, next) => {
     .then((data) => {
       // Store Spotify Playlist Data in res.locals
       res.locals.playlists = data;
-      fs.writeFile(path.resolve(__dirname, '../../../samples/playlist.json'), JSON.stringify(data, null, 2), err => console.error(err));
+      // fs.writeFile(path.resolve(__dirname, '../../../samples/playlist.json'), JSON.stringify(data, null, 2), err => console.error(err));
       return next();
     })
     .catch(spotErr => console.error('Error: Could Not Retrieve User Playlist From Spotify: ', spotErr));
@@ -109,7 +109,7 @@ const parseUserPlaylists = (_, res, next) => {
       imageUri,
     });
   });
-  fs.writeFile(path.resolve(__dirname, '../../../samples/parsedPlaylist.json'), JSON.stringify(res.locals.parsedPlaylists, null, 2), err => console.error(err));
+  // fs.writeFile(path.resolve(__dirname, '../../../samples/parsedPlaylist.json'), JSON.stringify(res.locals.parsedPlaylists, null, 2), err => console.error(err));
   return next();
 };
 
