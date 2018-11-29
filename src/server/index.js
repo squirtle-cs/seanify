@@ -7,8 +7,10 @@
 const express = require('express');
 const PORT = process.env.PORT || 3000;
 const app = express();
-const db = require('./utils/dbconnect');
+// const db = require('./utils/dbconnect');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+
 
 // use statements
 app.use(bodyParser.json());
@@ -21,6 +23,12 @@ app.use(cookieParser());
 const spotifyController = require('./controllers/spotifyController');
 const cookieController = require('./controllers/cookieController');
 
+//
+
+
+//
+
+
 // GET Route - Get Spotify Authorization Code
 app.get('/spotify/login',
   spotifyController.getAuthCode,
@@ -30,7 +38,7 @@ app.get('/spotify/login',
 app.get('/callback/spotify',
   spotifyController.getAuthToken,
   cookieController.setCookie,
-  (req, res) => res.redirect('/spotify/playlists'));
+  (req, res) => res.sendStatus(200));
 
 // GET Route - Get Spotify Playlists > Return Parsed Playlists
 app.get('/spotify/playlists',
@@ -46,5 +54,5 @@ app.get('/spotify/playlist/:id',
 
 app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));
 
-db.connect();
+// db.connect();
 
