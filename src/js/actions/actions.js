@@ -16,7 +16,6 @@ export const loginToSpotify = () => {
         return res.json();
       })
       .then((playlists) => {
-        console.log(playlists);
         dispatch(showFromPlaylists(playlists));
       });
   };
@@ -34,7 +33,6 @@ export const getSpotifyPlaylistSongs = (playlistId) => {
         return res.json();
       })
       .then((songs) => {
-        console.log(songs);
         dispatch(showFromSongs(songs));
       });
   };

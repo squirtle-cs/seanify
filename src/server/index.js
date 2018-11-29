@@ -27,19 +27,23 @@ const spotifyController = require('./controllers/spotifyController');
 // GET Route - Get Spotify Authorization Code
 app.get('/spotify/login',
   spotifyController.getAuthCode,
-  (req, res) => res.redirect(res.locals.redirectUrl));
+  (req, res) => {
+    res.redirect(res.locals.redirectUrl);
+  });
 
 // GET Route - Get Spotify Token > Set to cookies { sToken: token }
 app.get('/callback/spotify',
   spotifyController.getAuthToken,
   cookieController.setCookie,
-  (req, res) => res.redirect('/'));
+  (req, res) => res.redirect('/spotify/playlists'));
 
 // GET Route - Get Spotify Playlists > Return Parsed Playlists
 app.get('/spotify/playlists',
   spotifyController.getUserPlaylists,
   spotifyController.parseUserPlaylists,
-  (req, res) => res.status(200).json(res.locals.parsedPlaylists));
+  (req, res) => {
+    res.status(200).json(res.locals.parsedPlaylists);
+  });
 
 // GET Route - Get Spotify Songs for Playlist
 app.get('/spotify/playlist/:id',
@@ -49,6 +53,7 @@ app.get('/spotify/playlist/:id',
 
 // app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, '../../dist/index.html')));
 app.use(express.static(`${__dirname}/../../dist`));
+
 // GET Route - Get Spotify Authorization Code
 app.get('/google/login',
   googleController.getAuthCode,
