@@ -14,6 +14,94 @@ const fs = require('fs');
 const path = require('path');
 
 /**
+ * Middleware to add a Song to a YouTube Playlist with User Access Token
+ * @param {Request} req Express HTTP Request Object
+ * @param {Response} res Express HTTP Response Object
+ * @param {*} next Express Function to Call Next Middleware
+ */
+
+const addToPlaylist = (req, res, next) => {
+  // Confirm Cookie - If no Google Token, redirect to google/login to refresh
+  if (!req.cookies.gToken) return res.redirect('/google/login');
+
+  // Generate endpoint string
+  const googURL = new URL('https://www.googleapis.com/youtube/v3/playlistItems');
+  const queryParams = {
+    part: 'snippet',
+  };
+  googURL.search = new URLSearchParams(queryParams);
+
+  // Destructure songId and playlistId from request parameters
+  const { songId, playlistId } = req.params;
+
+  // POST song to YouTube API at endpoint to add to playlist
+  return fetch(googURL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${req.cookies.gToken}`,
+      'Content-Type': 'application/json',
+      Host: 'www.googleapis.com',
+    },
+    body: JSON.stringify({
+      snippet: {
+        resourceId: {
+          kind: 'youtube#video',
+          videoId: songId,
+        },
+        playlistId,
+      },
+    }),
+  })
+    .then(data => data.json())
+    .then((data) => {
+      res.locals.playlistUrl = `https://music.youtube.com/playlist?list=${data.snippet.playlistId}`;
+      return next();
+    })
+    .catch(googErr => console.error('Error: Could Not Add To YouTube Playlist: ', googErr));
+};
+
+/**
+ * Middleware to generate YouTube Playlist with User Access Token
+ * @param {Request} req Express HTTP Request Object
+ * @param {Response} res Express HTTP Response Object
+ * @param {*} next Express Function to Call Next Middleware
+ */
+const createPlaylist = (req, res, next) => {
+  // Confirm Cookie - If no Google Token, redirect to google/login to refresh
+  if (!req.cookies.gToken) return res.redirect('/google/login');
+
+  // Generate endpoint string
+  const googURL = new URL('https://www.googleapis.com/youtube/v3/playlists');
+  const queryParams = {
+    part: 'snippet',
+  };
+  googURL.search = new URLSearchParams(queryParams);
+
+  // POST playlistName to YouTube API at endpoint to generate playlist
+  return fetch(googURL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${req.cookies.gToken}`,
+      'Content-Type': 'application/json',
+      Host: 'www.googleapis.com',
+    },
+    body: JSON.stringify({
+      snippet: {
+        title: req.params.playlistName,
+        description: 'Playlist Created by Seanify',
+      },
+    }),
+  })
+    .then(data => data.json())
+    .then((data) => {
+      fs.writeFile(path.resolve(__dirname, '../../../samples/newYoutubePlaylist.json'), JSON.stringify(data, null, 2), err => console.error(err));
+      res.locals.newPlaylistId = data.id;
+      return next();
+    })
+    .catch(googErr => console.error('Error: Could Not Create YouTube Playlist: ', googErr));
+};
+
+/**
  * Middleware to generate Google redirect URL to retrieve User Authorization
  * @param {Request} _ Express HTTP Request Object
  * @param {Response} res Express HTTP Response Object
@@ -64,7 +152,7 @@ const getAuthToken = (req, res, next) => {
  */
 const query = (req, res, next) => {
   // Confirm Cookie - If no Google Token, redirect to google/login to refresh
-  if (!req.cookies.gToken) res.redirect('/google/login');
+  if (!req.cookies.gToken) return res.redirect('/google/login');
 
   // Generate endpoint string, including query parameter to indicate # of playlists to request
   const googURL = new URL('https://www.googleapis.com/youtube/v3/search');
@@ -75,7 +163,7 @@ const query = (req, res, next) => {
   };
   googURL.search = new URLSearchParams(queryParams);
 
-  fetch(googURL, {
+  return fetch(googURL, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${req.cookies.gToken}`,
@@ -94,7 +182,7 @@ const query = (req, res, next) => {
 };
 
 /**
- * Middleware to Parse Google Search Result Data, return array of parsed objects
+ * Middleware to Parse YouTube Search Result Data, return array of parsed objects
  * @param {Request} _ Express HTTP Request Object
  * @param {Response} res Express HTTP Response Object
  * @param {*} next Express Function to Call Next Middleware
@@ -103,21 +191,21 @@ const parseQuery = (_, res, next) => {
   // Store Parsed Playlist Objects in res.locals Array
   res.locals.parsedQuery = [];
   // Parse each item in the playlist object retrieved from Spotify
-  res.locals.query.items.forEach((result) => {
-    return res.locals.parsedQuery.push({
-      videoId: result.id.videoId,
-      videoName: result.snippet.title,
-      videoUri: `https://www.youtube.com/watch?v=${result.id.videoId}`,
-      channelName: result.snippet.channelTitle,
-      channelUrl: `https://www.youtube.com/channel/${result.snippet.channelId}`,
-      imageUri: result.snippet.thumbnails.high.url,
-    });
-  });
+  res.locals.query.items.forEach(result => res.locals.parsedQuery.push({
+    videoId: result.id.videoId,
+    videoName: result.snippet.title,
+    videoUri: `https://www.youtube.com/watch?v=${result.id.videoId}`,
+    channelName: result.snippet.channelTitle,
+    channelUrl: `https://www.youtube.com/channel/${result.snippet.channelId}`,
+    imageUri: result.snippet.thumbnails.high.url,
+  }));
   fs.writeFile(path.resolve(__dirname, '../../../samples/parsedSearch.json'), JSON.stringify(res.locals.parsedQuery, null, 2), err => console.error(err));
   return next();
 };
 
 module.exports = {
+  addToPlaylist,
+  createPlaylist,
   getAuthCode,
   getAuthToken,
   parseQuery,

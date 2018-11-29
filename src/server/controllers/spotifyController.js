@@ -62,7 +62,7 @@ const getAuthToken = (req, res, next) => {
  */
 const getUserPlaylists = (req, res, next) => {
   // Confirm Cookie - If no Spotify Token, redirect to spotify/login to refresh
-  if (!req.cookies.sToken) res.redirect('/spotify/login');
+  if (!req.cookies.sToken) return res.redirect('/spotify/login');
 
   // Generate endpoint string, including query parameter to indicate # of playlists to request
   const spotURL = new URL('https://api.spotify.com/v1/me/playlists');
@@ -70,7 +70,7 @@ const getUserPlaylists = (req, res, next) => {
   const queryParams = { limit: 25 };
   spotURL.search = new URLSearchParams(queryParams);
 
-  fetch(spotURL, {
+  return fetch(spotURL, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${req.cookies.sToken}`,
@@ -121,7 +121,7 @@ const parseUserPlaylists = (_, res, next) => {
  */
 const getSongs = (req, res, next) => {
   // Confirm Cookie - If no Spotify Token, redirect to spotify/login to refresh
-  if (!req.cookies.sToken) res.redirect('/spotify/login');
+  if (!req.cookies.sToken) return res.redirect('/spotify/login');
 
   // Generate endpoint string, including query parameter to indicate # of playlists to request
   const spotURL = new URL(`https://api.spotify.com/v1/playlists/${req.params.id}/tracks`);
@@ -132,7 +132,7 @@ const getSongs = (req, res, next) => {
   };
   spotURL.search = new URLSearchParams(queryParams);
 
-  fetch(spotURL, {
+  return fetch(spotURL, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${req.cookies.sToken}`,
