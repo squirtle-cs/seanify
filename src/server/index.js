@@ -6,11 +6,18 @@
 // Import Express to activate server, Cookie Parser to retrieve cookie data
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 const app = express();
 const PORT = 3000;
 
 app.use(cookieParser());
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+});
 
 // Import Middleware to interface with Spotify API and Manage Cookies
 const spotifyController = require('./controllers/spotifyController');
@@ -39,4 +46,6 @@ app.get('/spotify/playlist/:id',
   spotifyController.parseSongs,
   (req, res) => res.status(200).json(res.locals.parsedSongs));
 
+// app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, '../../dist/index.html')));
+app.use(express.static(`${__dirname}/../../dist`));
 app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));

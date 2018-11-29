@@ -1,26 +1,16 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
-class PlaylistList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  // const mapStateToProps = state => {
-  //   return { playlists: state.playlists };
-  // };
-
-  // const ConnectedList = ({ articles }) => (
-  //   <ul className='list-group list-group-flush'>
-  //     {playlists.map(playlist => (
-  //       <li className='list-group-item' key={playlist.id}>
-  //         {playlist.playlistName}
-  //       </li>
-  //     ))}
-  //   </ul>
-  // );
-
-  // const List = connect(mapStateToProps)(ConnectedList);
-}
+const PlaylistList = props => {
+  const { playlists, getSpotifyPlaylistSongs } = props;
+  return (
+    <div>
+      <ul>
+        {playlists.map(playlist => (
+          <li onClick={() => getSpotifyPlaylistSongs(playlist.playlistId)} key={playlist.playlistId}>{playlist.playlistName}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 export default PlaylistList;

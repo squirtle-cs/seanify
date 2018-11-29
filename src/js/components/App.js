@@ -1,23 +1,21 @@
 import React from 'react';
 // import List from './List';
 // import Form from './Form';
-import Login from './Login';
-import PlaylistList from './PlaylistList';
+import Login from './SpotifyEntry';
+import LeftContainer from './LeftContainer';
+import RightContainer from './RightContainer';
+
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loggedIn: false,
-      // playlists: []
-    };
-  }
 
   render() {
-    if (this.state.loggedIn) {
-      return <PlaylistList />;
-    }
-    return <Login loggedIn={this.state} />;
+    return <div>
+      <header className="headerBar">
+        <h1>Seanify: Playlist Migration App</h1>
+      </header>
+      <LeftContainer />
+      <RightContainer />
+    </div>
   }
 }
 

@@ -1,5 +1,6 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const path = require('path');
 
 module.exports = {
   entry: './src/js/index.js',
@@ -48,4 +49,16 @@ module.exports = {
       chunkFilename: '[id].css',
     }),
   ],
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    historyApiFallback: true,
+    proxy: {
+      '*': {
+        target: 'http://localhost:3000',
+      },
+    },
+  },
+  output: {
+    publicPath: '/',
+  },
 };

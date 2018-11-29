@@ -1,1 +1,3 @@
-export const ADD_ARTICLE = "ADD_ARTICLE";
+export const SHOW_FROM_PLAYLISTS = "SHOW_FROM_PLAYLISTS";
+
+export const SHOW_FROM_SONGS = "SHOW_FROM_SONGS";
