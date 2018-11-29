@@ -21,8 +21,7 @@ require('dotenv').config();
  */
 const getAuthCode = (_, res, next) => {
   // Set scope of access that user will grant our application and generate URL
-  const scope = 'playlist-read-private';
-  res.locals.redirectUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${process.env.SPOT_CLIENT_ID}&scope=${encodeURIComponent(scope)}&redirect_uri=${encodeURIComponent(process.env.SPOT_REDIRECT_URI)}`;
+  res.locals.redirectUrl = `https://accounts.spotify.com/authorize?response_type=code&client_id=${process.env.SPOT_CLIENT_ID}&scope=${encodeURIComponent('playlist-read-private')}&redirect_uri=${encodeURIComponent(process.env.SPOT_REDIRECT_URI)}`;
   return next();
 };
 

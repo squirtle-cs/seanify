@@ -7,10 +7,16 @@
 const express = require('express');
 const PORT = process.env.PORT || 3000;
 const app = express();
-// const db = require('./utils/dbconnect');
+
+// Access dotenv 
+require('dotenv').config();
+
+// Importing the Connect to the Database
+const db = require('./utils/dbconnect');
+
+// Requiring the parsers
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-
 
 // use statements
 app.use(bodyParser.json());
@@ -20,14 +26,9 @@ app.use(express.static('dist'));
 app.use(cookieParser());
 
 // Import Middleware to interface with Spotify API and Manage Cookies
-const spotifyController = require('./controllers/spotifyController');
 const cookieController = require('./controllers/cookieController');
-
-//
-
-
-//
-
+const googleController = require('./controllers/googleController');
+const spotifyController = require('./controllers/spotifyController');
 
 // GET Route - Get Spotify Authorization Code
 app.get('/spotify/login',
@@ -38,7 +39,7 @@ app.get('/spotify/login',
 app.get('/callback/spotify',
   spotifyController.getAuthToken,
   cookieController.setCookie,
-  (req, res) => res.sendStatus(200));
+  (req, res) => res.redirect('/'));
 
 // GET Route - Get Spotify Playlists > Return Parsed Playlists
 app.get('/spotify/playlists',
@@ -52,7 +53,24 @@ app.get('/spotify/playlist/:id',
   spotifyController.parseSongs,
   (req, res) => res.status(200).json(res.locals.parsedSongs));
 
+// GET Route - Get Spotify Authorization Code
+app.get('/google/login',
+  googleController.getAuthCode,
+  (req, res) => res.redirect(res.locals.googleUrl));
+
+// GET Route - Get Spotify Token > Set to cookies { sToken: token }
+app.get('/callback/google',
+  googleController.getAuthToken,
+  cookieController.setCookie,
+  (req, res) => res.redirect('/'));
+
+// GET Route - Get Spotify Playlists > Return Parsed Playlists
+app.get('/google/search/:query',
+  googleController.search,
+  // spotifyController.parseResults,
+  (req, res) => res.status(200).json(res.locals.query));
+
 app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));
 
-// db.connect();
+db.connect();
 
