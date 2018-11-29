@@ -62,7 +62,7 @@ const getAuthToken = (req, res, next) => {
  * @param {Response} res Express HTTP Response Object
  * @param {*} next Express Function to Call Next Middleware
  */
-const search = (req, res, next) => {
+const query = (req, res, next) => {
   // Confirm Cookie - If no Google Token, redirect to google/login to refresh
   if (!req.cookies.gToken) res.redirect('/google/login');
 
@@ -93,8 +93,33 @@ const search = (req, res, next) => {
     .catch(googErr => console.error('Error: Could Not Retrieve User Query From Google: ', googErr));
 };
 
+/**
+ * Middleware to Parse Google Search Result Data, return array of parsed objects
+ * @param {Request} _ Express HTTP Request Object
+ * @param {Response} res Express HTTP Response Object
+ * @param {*} next Express Function to Call Next Middleware
+ */
+const parseQuery = (_, res, next) => {
+  // Store Parsed Playlist Objects in res.locals Array
+  res.locals.parsedQuery = [];
+  // Parse each item in the playlist object retrieved from Spotify
+  res.locals.query.items.forEach((result) => {
+    return res.locals.parsedQuery.push({
+      videoId: result.id.videoId,
+      videoName: result.snippet.title,
+      videoUri: `https://www.youtube.com/watch?v=${result.id.videoId}`,
+      channelName: result.snippet.channelTitle,
+      channelUrl: `https://www.youtube.com/channel/${result.snippet.channelId}`,
+      imageUri: result.snippet.thumbnails.high.url,
+    });
+  });
+  fs.writeFile(path.resolve(__dirname, '../../../samples/parsedSearch.json'), JSON.stringify(res.locals.parsedQuery, null, 2), err => console.error(err));
+  return next();
+};
+
 module.exports = {
   getAuthCode,
   getAuthToken,
-  search,
+  parseQuery,
+  query,
 };
