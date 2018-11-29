@@ -45,16 +45,26 @@ app.get('/google/login',
   googleController.getAuthCode,
   (req, res) => res.redirect(res.locals.googleUrl));
 
-// GET Route - Get Spotify Token > Set to cookies { sToken: token }
+// GET Route - Get Google Token > Set to cookies { gToken: token }
 app.get('/callback/google',
   googleController.getAuthToken,
   cookieController.setCookie,
   (req, res) => res.redirect('/'));
 
-// GET Route - Get Spotify Playlists > Return Parsed Playlists
+// GET Route - Get YouTube Search Query Results
 app.get('/google/search/:query',
   googleController.query,
   googleController.parseQuery,
   (req, res) => res.status(200).json(res.locals.parsedQuery));
+
+// GET Route - Generate YouTube Playlist
+app.get('/google/playlist/create/:playlistName',
+  googleController.createPlaylist,
+  (req, res) => res.status(200).json(res.locals.newPlaylistId));
+
+// GET Route - Generate YouTube Playlist
+app.get('/google/playlist/:playlistId/addSong/:songId',
+  googleController.addToPlaylist,
+  (req, res) => res.status(200).json(res.locals.playlistUrl));
 
 app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));
