@@ -53,8 +53,8 @@ app.get('/callback/google',
 
 // GET Route - Get Spotify Playlists > Return Parsed Playlists
 app.get('/google/search/:query',
-  googleController.search,
-  // spotifyController.parseResults,
-  (req, res) => res.status(200).json(res.locals.query));
+  googleController.query,
+  googleController.parseQuery,
+  (req, res) => res.status(200).json(res.locals.parsedQuery));
 
 app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));
