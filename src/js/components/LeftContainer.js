@@ -34,7 +34,7 @@ const LeftContainer = (props) => {
   }
 
   return (
-    <div className="floatLeft" className="divPadding">
+    <div className="floatLeft divPadding">
       {content}
     </div>
   );
