@@ -162,7 +162,7 @@ const query = (req, res, next) => {
     q: req.params.query,
   };
   googURL.search = new URLSearchParams(queryParams);
-
+  console.log('hello');
   return fetch(googURL, {
     method: 'GET',
     headers: {
@@ -171,7 +171,10 @@ const query = (req, res, next) => {
       Host: 'www.googleapis.com',
     },
   })
-    .then(data => data.json())
+    .then(data => {
+      console.log('data ', data);
+      return data.json();
+    })
     .then((data) => {
       // Store Spotify Playlist Data in res.locals
       res.locals.query = data;
