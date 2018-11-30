@@ -1,4 +1,4 @@
-import { ADD_ARTICLE } from '../constants/action-types';
+import * as types from '../constants/action-types';
 
 const initialState = {
   toLoggedIn: false,
@@ -6,9 +6,16 @@ const initialState = {
 };
 
 export default function (state = initialState, action) {
+  let stateCopy;
   switch (action.type) {
-    // case ADD_ARTICLE:
-    //   return { ...state, articles: [...state.articles, action.payload] };
+    case types.SAVE_YOUTUBE_SONG: {
+      stateCopy = Object.assign({}, state);
+      const newSongs = stateCopy.toSongs.slice();
+      newSongs.push(action.payload);
+      stateCopy.toSongs = newSongs;
+      console.log('new songs ', newSongs);
+      return stateCopy;
+    }
     default:
       return state;
   }

@@ -37,3 +37,18 @@ export const getSpotifyPlaylistSongs = (playlistId) => {
       });
   };
 };
+
+export const saveYouTubeSong = (songArray) => ({
+  type: types.SAVE_YOUTUBE_SONG,
+  payload: songArray,
+});
+
+export const getYouTubeSong = (songName) => (dispatch) => {
+  console.log('before fetch getYouTubeSong');
+  return fetch(`http://localhost:3000/google/search/${songName}`, { mode: 'no-cors' })
+    .then(res => res.json())
+    .then((song) => {
+      console.log('getYouTubeSong');
+      dispatch(saveYouTubeSong(song));
+    });
+};
