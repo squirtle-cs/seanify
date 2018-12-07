@@ -1,5 +1,41 @@
 
 body {
   line-height: 2;
-  color: darkred;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  margin: 0;
+}
+
+.imgLink:hover {
+  cursor:pointer
+}
+
+.imgLink {
+  width: 70%;
+}
+
+.floatLeft {
+  float: left;
+  width: 45%;
+  border: 1px solid black;
+}
+
+.floatRight {
+  float: right;
+  width: 45%;
+  border: 1px solid black;
+}
+
+.headerBar {
+  height: 80px;
+  margin: 0;
+  padding: 8px;
+  background-color: lightgray;
+}
+
+h1 {
+  margin: 0;
+}
+
+.divPadding {
+  padding: 15px;
 }
