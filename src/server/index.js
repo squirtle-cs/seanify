@@ -81,4 +81,7 @@ app.get('/google/playlist/:playlistId/addSong/:songId',
   googleController.addToPlaylist,
   (req, res) => res.status(200).json(res.locals.playlistUrl));
 
+// GET Route - Serve bundled app
+app.use(express.static(path.resolve(__dirname, '../dist')));
+
 app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));
