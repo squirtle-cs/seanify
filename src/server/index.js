@@ -11,7 +11,7 @@ const app = express();
 // Access dotenv 
 require('dotenv').config();
 
-// Importing the Connect to the Database
+// Importing the function to save to Database
 const db = require('./utils/dbconnect');
 
 // Requiring the parsers
@@ -25,10 +25,11 @@ app.use(bodyParser.json());
 app.use(express.static('dist'));
 app.use(cookieParser());
 
-// Import Middleware to interface with Spotify API and Manage Cookies
+// Import Middleware to interface with Spotify API, Manage Cookies, and Saving to Database
 const cookieController = require('./controllers/cookieController');
 const googleController = require('./controllers/googleController');
 const spotifyController = require('./controllers/spotifyController');
+const tableController = require('./controllers/tableController');
 
 // GET Route - Get Spotify Authorization Code
 app.get('/spotify/login',
@@ -69,6 +70,11 @@ app.get('/google/search/:query',
   googleController.query,
   googleController.parseQuery,
   (req, res) => res.status(200).json(res.locals.parsedQuery));
+
+// Post Route - Post to Youtube, Spotify, Link, and PlayList Tables
+app.post('/savesong',
+  tableController.saveSong,
+  (req, res) => res.send('hi'));
 
 app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));
 
