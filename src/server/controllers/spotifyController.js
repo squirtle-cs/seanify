@@ -109,7 +109,7 @@ const parseUserPlaylists = (_, res, next) => {
       imageUri,
     });
   });
-  // fs.writeFile(path.resolve(__dirname, '../../../samples/parsedPlaylist.json'), JSON.stringify(res.locals.parsedPlaylists, null, 2), err => console.error(err));
+  fs.writeFile(path.resolve(__dirname, '../../../samples/parsedPlaylist.json'), JSON.stringify(res.locals.parsedPlaylists, null, 2), err => console.error(err));
   return next();
 };
 
