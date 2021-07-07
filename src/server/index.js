@@ -5,12 +5,25 @@
 
 // Import Express to activate server, Cookie Parser to retrieve cookie data
 const express = require('express');
+const PORT = process.env.PORT || 3000;
+const app = express();
+
+// Access dotenv 
+require('dotenv').config();
+
+// Importing the function to save to Database
+const db = require('./utils/dbconnect');
+
+// Requiring the parsers
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const path = require('path');
 
-const app = express();
-const PORT = 3000;
+// use statements
+app.use(bodyParser.json());
 
+// deploys all the files that is in your dist folder
+app.use(express.static('dist'));
 app.use(cookieParser());
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -19,10 +32,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// Import Middleware to interface with Spotify API and Manage Cookies
+// Import Middleware to interface with Spotify API, Manage Cookies, and Saving to Database
 const cookieController = require('./controllers/cookieController');
 const googleController = require('./controllers/googleController');
 const spotifyController = require('./controllers/spotifyController');
+const tableController = require('./controllers/tableController');
 
 // GET Route - Get Spotify Authorization Code
 app.get('/spotify/login',
@@ -81,7 +95,15 @@ app.get('/google/playlist/:playlistId/addSong/:songId',
   googleController.addToPlaylist,
   (req, res) => res.status(200).json(res.locals.playlistUrl));
 
+// POST Route - Post to Youtube, Spotify, Link, and PlayList Tables
+app.post('/savesong',
+  tableController.saveSong,
+  (req, res) => res.send('hi'));
+
 // GET Route - Serve bundled app
 app.use(express.static(path.resolve(__dirname, '../dist')));
 
 app.listen(PORT, () => console.log(`Server Listening on PORT: ${PORT}`));
+
+db.connect();
+
